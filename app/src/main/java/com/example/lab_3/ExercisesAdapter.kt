@@ -17,8 +17,8 @@ class ExercisesAdapter(private val itemList: List<Pair<String, String?>>, privat
     }
 
     override fun onBindViewHolder(holder: ExercisesHolder, position: Int){
-        val animalData = itemList[position]
-        holder.bind(animalData.first, animalData.second)
+        val exData = itemList[position]
+        holder.bind(exData.first, exData.second)
     }
 
     override fun getItemCount(): Int {
@@ -34,7 +34,7 @@ class ExercisesAdapter(private val itemList: List<Pair<String, String?>>, privat
                 onItemClick(adapterPosition)
             }
         }
-        fun bind(animalName: String, exercisePhoto: String?){
+        fun bind(exerciseName: String, exercisePhoto: String?){
             Glide.with(itemView)
                 .load(exercisePhoto)
                 .centerCrop()
@@ -42,7 +42,7 @@ class ExercisesAdapter(private val itemList: List<Pair<String, String?>>, privat
                 .error(R.drawable.ic_launcher_background)
                 .fallback(R.drawable.ic_launcher_background)
                 .into(itemBinding.exercisesPictures)
-            itemBinding.exercisesName.text = animalName
+            itemBinding.exercisesName.text = exerciseName
         }
     }
 }
