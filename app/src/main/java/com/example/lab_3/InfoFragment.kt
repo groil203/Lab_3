@@ -5,33 +5,43 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lab_3.adapter.InfoAdapter
 import com.example.lab_3.databinding.FragmentInfoBinding
-import com.example.lab_3.databinding.FragmentListBinding
 
 
 class InfoFragment : Fragment() {
+
     private lateinit var binding: FragmentInfoBinding
+    private lateinit var adapter: InfoAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        binding = FragmentInfoBinding.inflate(inflater)
+        binding = FragmentInfoBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.exerciseNameText.text = arguments?.getString("InfoName")
-        binding.exerciseTextInfo.text = arguments?.getString("InfoText")
-        Glide.with(view)
-            .load(arguments?.getString("InfoGif"))
-            .centerCrop()
-            .placeholder(binding.infoGif.drawable)
-            .error(R.drawable.ic_launcher_background)
-            .fallback(R.drawable.ic_launcher_background)
-            .into(binding.infoGif)
+        binding.exInfoRecycler.layoutManager = LinearLayoutManager(MainActivity())
+        val viewModel = ViewModelProvider(this)[InfoViewModel::class.java]
+        adapter = InfoAdapter()
+        binding.exInfoRecycler.adapter = adapter
+        viewModel.getListExercises()
+        viewModel.myInfoExercisesList.observe(viewLifecycleOwner) { list ->
+            list.body()?.let { adapter.setList(it) }
+        }
+
+        binding.updateBtn.setOnClickListener {
+            findNavController().popBackStack()
+            findNavController().navigate(R.id.infoFragment)
+
+        }
     }
+
+
 }
